@@ -1,0 +1,11 @@
+# Ignore all backup files
+*~
+
+# Ignore build artifacts
+bin/*
+
+# Ignore python compiled files
+*.pyc
+
+# Ignore msvc temp files
+src/*.suo
