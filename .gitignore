@@ -9,3 +9,4 @@ bin/*
 
 # Ignore msvc temp files
 src/*.suo
+src/*/obj

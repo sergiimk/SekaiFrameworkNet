@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("framework")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription(".Net port of OSGi framework")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("SekaiSoftware")]
 [assembly: AssemblyProduct("framework")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2010")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © SekaiSoftware 2010")]
+[assembly: AssemblyTrademark("SekaiFramework.Net")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

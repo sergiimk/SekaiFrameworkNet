@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,22 +26,32 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Interfaces\Exceptions.cs" />
+    <Compile Include="Core\Interfaces\IBundle.cs" />
+    <Compile Include="Core\Interfaces\IBundleActivator.cs" />
+    <Compile Include="Core\Interfaces\IBundleContext.cs" />
+    <Compile Include="Core\Interfaces\IBundleListener.cs" />
+    <Compile Include="Core\Interfaces\IFilter.cs" />
+    <Compile Include="Core\Interfaces\IFrameworkListener.cs" />
+    <Compile Include="Core\Interfaces\IServiceFactory.cs" />
+    <Compile Include="Core\Interfaces\IServiceListener.cs" />
+    <Compile Include="Core\Interfaces\IServiceReference.cs" />
+    <Compile Include="Core\Interfaces\IServiceRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\Implementation\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
