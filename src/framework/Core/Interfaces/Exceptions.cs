@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace framework.Core.Interfaces
+namespace framework.Core
 {
 	
 	//////////////////////////////////////////////////////////////////////////

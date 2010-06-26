@@ -37,12 +37,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Implementation\Bundle\CBundle.cs" />
+    <Compile Include="Core\Implementation\Bundle\CBundleContext.cs" />
+    <Compile Include="Core\Implementation\Events\EventDispatchers.cs" />
+    <Compile Include="Core\Implementation\Events\CEventServer.cs" />
+    <Compile Include="Core\Implementation\Events\ListenerQueue.cs" />
+    <Compile Include="Core\Implementation\Framework\CBundleRepository.cs" />
+    <Compile Include="Core\Implementation\Framework\CFrameworkFactory.cs" />
+    <Compile Include="Core\Implementation\Framework\CSystemBundleActivator.cs" />
+    <Compile Include="Core\Implementation\Framework\CSystemBundle.cs" />
+    <Compile Include="Core\Implementation\Services\CServiceReference.cs" />
+    <Compile Include="Core\Implementation\Services\CServiceRegistration.cs" />
+    <Compile Include="Core\Implementation\Services\CServiceRegistry.cs" />
     <Compile Include="Core\Interfaces\Exceptions.cs" />
     <Compile Include="Core\Interfaces\IBundle.cs" />
     <Compile Include="Core\Interfaces\IBundleActivator.cs" />
     <Compile Include="Core\Interfaces\IBundleContext.cs" />
     <Compile Include="Core\Interfaces\IBundleListener.cs" />
     <Compile Include="Core\Interfaces\IFilter.cs" />
+    <Compile Include="Core\Interfaces\IFramework.cs" />
+    <Compile Include="Core\Interfaces\IFrameworkFactory.cs" />
     <Compile Include="Core\Interfaces\IFrameworkListener.cs" />
     <Compile Include="Core\Interfaces\IServiceFactory.cs" />
     <Compile Include="Core\Interfaces\IServiceListener.cs" />
@@ -50,9 +64,7 @@
     <Compile Include="Core\Interfaces\IServiceRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\Implementation\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

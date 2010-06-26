@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace framework.Core.Implementation.Services
+{
+	class CServiceReference : IServiceReference
+	{
+		//////////////////////////////////////////////////////////////////////////
+
+		public object getProperty(string key)
+		{
+			throw new NotImplementedException();
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		public string[] getPropertyKeys()
+		{
+			throw new NotImplementedException();
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		public IBundle getBundle()
+		{
+			throw new NotImplementedException();
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		public IBundle[] getUsingBundles()
+		{
+			throw new NotImplementedException();
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		public int CompareTo(IServiceReference other)
+		{
+			throw new NotImplementedException();
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+	}
+}

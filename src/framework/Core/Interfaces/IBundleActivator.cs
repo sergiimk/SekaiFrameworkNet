@@ -13,7 +13,7 @@ namespace framework.Core
 	/// BundleActivator.Stop method will be called when the bundle is to be stopped. 
 	/// The Framework must not concurrently call a BundleActivator object.
 	/// </summary>
-	interface IBundleActivator
+	public interface IBundleActivator
 	{
 		/// <summary>
 		/// Called when this bundle is started so the Framework can perform 
