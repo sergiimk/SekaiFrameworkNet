@@ -137,6 +137,6 @@ namespace framework.Core.Implementation
 		List<IServiceRegistration>	m_publishedServices;
 		//TServicesInUseContainer	m_servicesInUse;
 
-		object m_lock = new object();
+		protected object m_lock = new object();
 	}
 }

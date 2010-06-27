@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using framework.Core.Implementation;
 
-namespace framework.Core.Implementation.Framework
+namespace framework.Core
 {
-	class CFrameworkFactory : IFrameworkFactory
+	public class CFrameworkFactory : IFrameworkFactory
 	{
 		//////////////////////////////////////////////////////////////////////////
 

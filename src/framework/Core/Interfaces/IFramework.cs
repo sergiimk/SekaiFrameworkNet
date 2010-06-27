@@ -26,6 +26,6 @@ namespace framework.Core
 		/// <param name="timeout">Maximum number of milliseconds to wait until 
 		/// this Framework has completely stopped. A value of zero will wait indefinitely.</param>
 		/// <returns>Framework Event indicating the reason this method returned</returns>
-		FrameworkEvent WaitForStop(long timeout);
+		FrameworkEvent WaitForStop(int timeout);
 	}
 }
