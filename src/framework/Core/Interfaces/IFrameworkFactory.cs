@@ -23,6 +23,6 @@ namespace framework.Core
 		/// the specified configuration argument since the configuration argument 
 		/// can be changed after the framework instance has been created.</param>
 		/// <returns></returns>
-		IFramework NewFramework(object configuration);
+		IFramework NewFramework(FrameworkConfig configuration);
 	}
 }

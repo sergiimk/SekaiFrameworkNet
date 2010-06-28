@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\framework\</OutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,7 +26,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\framework\</OutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="Core\Implementation\Bundle\CBundle.cs" />
     <Compile Include="Core\Implementation\Bundle\CBundleContext.cs" />
+    <Compile Include="Core\Implementation\Bundle\CManifest.cs" />
     <Compile Include="Core\Implementation\Events\EventDispatchers.cs" />
     <Compile Include="Core\Implementation\Events\CEventServer.cs" />
     <Compile Include="Core\Implementation\Events\ListenerQueue.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="Core\Implementation\Services\CServiceRegistration.cs" />
     <Compile Include="Core\Implementation\Services\CServiceRegistry.cs" />
     <Compile Include="Core\Interfaces\Exceptions.cs" />
+    <Compile Include="Core\Interfaces\FrameworkConfig.cs" />
     <Compile Include="Core\Interfaces\IBundle.cs" />
     <Compile Include="Core\Interfaces\IBundleActivator.cs" />
     <Compile Include="Core\Interfaces\IBundleContext.cs" />
@@ -62,6 +64,7 @@
     <Compile Include="Core\Interfaces\IServiceListener.cs" />
     <Compile Include="Core\Interfaces\IServiceReference.cs" />
     <Compile Include="Core\Interfaces\IServiceRegistration.cs" />
+    <Compile Include="Core\Interfaces\Manifest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

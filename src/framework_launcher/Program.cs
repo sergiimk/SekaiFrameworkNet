@@ -15,6 +15,11 @@ namespace framework_launcher
 				IFramework fwk = factory.NewFramework(null);
 				fwk.Init();
 				fwk.Start();
+
+				IBundleContext ctx = fwk.getBundleContext();
+				IBundle console = ctx.InstallBundle("framework_console");
+				console.Start();
+
 				fwk.Stop();
 				fwk.WaitForStop(0);
 			}

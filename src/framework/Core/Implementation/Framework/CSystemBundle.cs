@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using System.Threading;
+using System.IO;
 
 namespace framework.Core.Implementation
 {
@@ -10,15 +11,21 @@ namespace framework.Core.Implementation
 	{
 		//////////////////////////////////////////////////////////////////////////
 
-		public CSystemBundle()
+		// TODO: unify config and system bundle's manifest
+		public CSystemBundle(FrameworkConfig config, CManifest manifest)
 			: base(0
 			, "System Bundle"
-			, "Sekai Framework"
-			, Assembly.GetExecutingAssembly().GetName().Version
+			, manifest
 			, DateTime.MinValue
 			, null)
 		{
 			m_systemBundle = this;
+			m_config = config;
+
+			m_config.FrameworkWorkingDirectory = Path.GetDirectoryName(manifest.AssemblyPath);
+
+			if (string.IsNullOrEmpty(m_config.BundleRegistryPath))
+				m_config.BundleRegistryPath = Path.Combine(m_config.FrameworkWorkingDirectory, "repository");
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -56,6 +63,9 @@ namespace framework.Core.Implementation
 				m_allServiceListeners = new ListenerQueue<IAllServiceListener>();
 
 				m_state = BundleState.STARTING;
+				m_context = new CBundleContext(this, this);
+				m_activator = new CSystemBundleActivator();
+				m_activator.Start(m_context);
 			}
 		}
 
@@ -135,6 +145,8 @@ namespace framework.Core.Implementation
 
 			lock (m_lock)
 			{
+				m_activator.Stop(m_context);
+
 				m_state = BundleState.RESOLVED;
 
 				m_shutdownResult = new FrameworkEvent(FrameworkEvent.Type.STOPPED, this, null);
@@ -183,6 +195,8 @@ namespace framework.Core.Implementation
 		// Internal
 		//////////////////////////////////////////////////////////////////////////
 
+		public FrameworkConfig getConfig() { return m_config; }
+
 		public CBundleRepository getBundleRepository() { return m_bundleRepository; }
 
 		public CServiceRegistry getServiceRegistery() { return m_serviceRegistry; }
@@ -220,6 +234,7 @@ namespace framework.Core.Implementation
 		// Members
 		//////////////////////////////////////////////////////////////////////////
 
+		FrameworkConfig m_config;
 		CBundleRepository m_bundleRepository;
 		CServiceRegistry m_serviceRegistry;
 		CEventServer m_eventServer;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Diagnostics;
 
 namespace framework.Core.Implementation
 {
@@ -8,13 +9,11 @@ namespace framework.Core.Implementation
 	{
 		//////////////////////////////////////////////////////////////////////////
 
-		public CBundle(	long id, string location, string symbolicName, 
-			Version version, DateTime lastModified, CSystemBundle systemBundle)
+		public CBundle(	long id, string location, CManifest manifest, DateTime lastModified, CSystemBundle systemBundle)
 		{
 			m_id = id;
 			m_location = location;
-			m_symbolicName = symbolicName;
-			m_version = version;
+			m_manifest = manifest;
 			m_lastModified = lastModified;
 			m_systemBundle = systemBundle;
 			m_state = BundleState.INSTALLED;
@@ -26,8 +25,8 @@ namespace framework.Core.Implementation
 		public BundleState		getState()				{ return m_state; }
 		public long				getBundleId()			{ return m_id; }
 		public string			getLocation()			{ return m_location; }
-		public string			getSymbolicName()		{ return m_symbolicName; }
-		public Version			getVersion()			{ return m_version; }
+		public string			getSymbolicName()		{ return m_manifest.SymbolicName; }
+		public Version			getVersion()			{ return m_manifest.Version; }
 		public DateTime			getLastModified()		{ return m_lastModified; }
 		public IBundleContext	getBundleContext()		{ return m_context; }
 
@@ -53,16 +52,47 @@ namespace framework.Core.Implementation
 
 		//////////////////////////////////////////////////////////////////////////
 
-		protected virtual void Resolve()
-		{
-			throw new NotImplementedException();
-		}
-
-		//////////////////////////////////////////////////////////////////////////
-
 		public virtual void Start(BundleStartOption options)
 		{
-			throw new NotImplementedException();
+			// TODO: replace with timeout-based lock
+			// TODO: add start-level support
+
+			lock(m_lock) 
+			{
+				if(m_state == BundleState.UNINSTALLED)
+					throw new BundleException("Bundle is uninstalled", BundleException.ErrorCode.ILLEGAL_STATE);
+
+				if(m_state == BundleState.ACTIVE)
+					return;
+
+				if(m_state == BundleState.INSTALLED)
+				{
+					Resolve();
+					Debug.Assert(m_state == BundleState.RESOLVED);
+				}
+
+				PreStart();
+				Debug.Assert(m_state == BundleState.STARTING);
+				
+				if(m_activator != null)
+				{
+					try
+					{
+						m_activator.Start(m_context);
+					}
+					catch(Exception ex)
+					{
+						PreStop();
+						PostStop();
+						throw new BundleException("Bundle activation failed", BundleException.ErrorCode.ACTIVATOR_ERROR, ex);
+					}
+
+					if(m_state == BundleState.UNINSTALLED)
+						throw new BundleException("Bundle was unregistered in time of activation");
+				}
+
+				PostStart();
+			}
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -120,17 +150,71 @@ namespace framework.Core.Implementation
 		}
 
 		//////////////////////////////////////////////////////////////////////////
+		// Internal
+		//////////////////////////////////////////////////////////////////////////
+
+		protected virtual void Resolve()
+		{
+			m_state = BundleState.RESOLVED;
+			m_systemBundle.RaiseBundleEvent(new BundleEvent(BundleEvent.Type.RESOLVED, this));
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		protected virtual void PreStart()
+		{
+			m_state = BundleState.STARTING;
+			m_systemBundle.RaiseBundleEvent(new BundleEvent(BundleEvent.Type.STARTING, this));
+
+			m_context = new CBundleContext(this, m_systemBundle);
+
+			// TODO: activator
+			m_activator = null;
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		protected virtual void PostStart()
+		{
+			m_state = BundleState.ACTIVE;
+			m_systemBundle.RaiseBundleEvent(new BundleEvent(BundleEvent.Type.STARTED, this));
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		protected virtual void PreStop()
+		{
+			/*
+			This bundle's state is set to STOPPING.
+			A bundle event of type BundleEvent.STOPPING is fired.
+			Any services registered by this bundle must be unregistered.
+			Any services used by this bundle must be released.
+			Any listeners registered by this bundle must be removed.
+			*/
+			m_state = BundleState.STOPPING;
+			m_systemBundle.RaiseBundleEvent(new BundleEvent(BundleEvent.Type.STOPPING, this));
+			// TODO: unregister all links
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		protected virtual void PostStop()
+		{
+			m_state = BundleState.RESOLVED;
+			m_systemBundle.RaiseBundleEvent(new BundleEvent(BundleEvent.Type.STOPPED, this));
+		}
+
+		//////////////////////////////////////////////////////////////////////////
 		// Members
 		//////////////////////////////////////////////////////////////////////////
 
 		long m_id;
-		protected BundleState m_state;
 		string m_location;
-		string m_symbolicName;
-		Version m_version;
 		DateTime m_lastModified;
-		CBundleContext m_context;
-		IBundleActivator m_activator;
+		protected BundleState m_state;
+		protected CManifest m_manifest;
+		protected CBundleContext m_context;
+		protected IBundleActivator m_activator;
 		protected CSystemBundle m_systemBundle;
 
 		//ModuleHandle				m_module;

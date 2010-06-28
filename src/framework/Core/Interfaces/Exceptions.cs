@@ -20,6 +20,7 @@ namespace framework.Core
 	{
 		public enum ErrorCode
 		{
+			UNSPECIFIED,			// No exception type is unspecified
 			ACTIVATOR_ERROR,		// The bundle activator was in error
 			DUPLICATE_BUNDLE_ERROR,	// The install or update operation failed because another already installed bundle has the same symbolic name and version
 			INVALID_OPERATION,		// The operation was invalid
@@ -29,8 +30,9 @@ namespace framework.Core
 			SECURITY_ERROR,			// The operation failed due to insufficient permissions
 			START_TRANSIENT_ERROR,	// The start transient operation failed because the start level of the bundle is greater than the current framework start level
 			STATECHANGE_ERROR,		// The operation failed to complete the requested lifecycle state change
-			UNSPECIFIED,			// No exception type is unspecified
 			UNSUPPORTED_OPERATION,	// The operation was unsupported
+
+			ILLEGAL_STATE, // Bundle is in illegal state to perform the operation (std: replaces Java IllegalStateException)
 		}
 
 		/// <summary>

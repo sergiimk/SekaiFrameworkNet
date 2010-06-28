@@ -32,15 +32,13 @@ namespace framework.Core.Implementation
 
 		public IBundle InstallBundle(string location, System.IO.Stream input)
 		{
-			throw new NotImplementedException();
+			CBundleRepository repo = m_systemBundle.getBundleRepository();
+			return repo.InstallBundle(location, input);
 		}
 
 		//////////////////////////////////////////////////////////////////////////
 
-		public IBundle InstallBundle(string location)
-		{
-			throw new NotImplementedException();
-		}
+		public IBundle InstallBundle(string location) { return InstallBundle(location, null); }
 
 		//////////////////////////////////////////////////////////////////////////
 
