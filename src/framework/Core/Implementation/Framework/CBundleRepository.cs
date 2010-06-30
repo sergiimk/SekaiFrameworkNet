@@ -117,6 +117,14 @@ namespace framework.Core.Implementation
 
 		//////////////////////////////////////////////////////////////////////////
 
+		public Assembly LoadBundleAssembly(CBundle bndl)
+		{
+			string assembly = bndl.getManifest().AssemblyPath;
+			return Assembly.LoadFrom(assembly);
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
 		long m_firstFreeID; // TODO: deal with fragmentation?
 		CSystemBundle m_systemBundle;
 		Dictionary<long, CBundle> m_bundlesByID;

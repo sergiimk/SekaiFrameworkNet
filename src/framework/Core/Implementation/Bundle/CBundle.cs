@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace framework.Core.Implementation
 {
@@ -153,6 +154,10 @@ namespace framework.Core.Implementation
 		// Internal
 		//////////////////////////////////////////////////////////////////////////
 
+		public CManifest getManifest() { return m_manifest; }
+
+		//////////////////////////////////////////////////////////////////////////
+
 		protected virtual void Resolve()
 		{
 			m_state = BundleState.RESOLVED;
@@ -166,10 +171,34 @@ namespace framework.Core.Implementation
 			m_state = BundleState.STARTING;
 			m_systemBundle.RaiseBundleEvent(new BundleEvent(BundleEvent.Type.STARTING, this));
 
-			m_context = new CBundleContext(this, m_systemBundle);
-
-			// TODO: activator
 			m_activator = null;
+
+			try
+			{
+				m_assembly = m_systemBundle.getBundleRepository().LoadBundleAssembly(this);
+
+				Type[] exports = m_assembly.GetExportedTypes();
+				foreach (Type t in exports)
+				{
+					TypeAttributes attrs = t.Attributes;
+					if ((attrs & TypeAttributes.Interface) == TypeAttributes.Interface ||
+						(attrs & TypeAttributes.Abstract) == TypeAttributes.Abstract)
+						continue;
+
+					if (t.GetInterface(typeof(IBundleActivator).FullName) != null)
+					{
+						m_activator = m_assembly.CreateInstance(t.FullName) as IBundleActivator;
+						break;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				m_state = BundleState.RESOLVED;
+				throw new BundleException("Failed to load bundle assembly", BundleException.ErrorCode.STATECHANGE_ERROR, ex);
+			}
+
+			m_context = new CBundleContext(this, m_systemBundle);
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -216,8 +245,8 @@ namespace framework.Core.Implementation
 		protected CBundleContext m_context;
 		protected IBundleActivator m_activator;
 		protected CSystemBundle m_systemBundle;
-
-		//ModuleHandle				m_module;
+		
+		Assembly					m_assembly;
 		List<IServiceRegistration>	m_publishedServices;
 		//TServicesInUseContainer	m_servicesInUse;
 
