@@ -37,6 +37,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Implementation\BundleActivator.cs" />
+    <Compile Include="Interfaces\ICommand.cs" />
+    <Compile Include="Interfaces\ICommandInterpreter.cs" />
+    <Compile Include="Interfaces\ICommandProvider.cs" />
+    <Compile Include="Interfaces\IConsole.cs" />
+    <Compile Include="Interfaces\IConsoleSession.cs" />
+    <Compile Include="Interfaces\IVariable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
