@@ -8,6 +8,21 @@ namespace framework.Core.Implementation
 	{
 		//////////////////////////////////////////////////////////////////////////
 
+		public CServiceRegistration(string[] clazz, object service, CBundleContext bundleCtx)
+		{
+			m_clazz = clazz;
+			m_instance = service;
+			m_bundleCtx = bundleCtx;
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		public string[] getClazz() { return m_clazz; }
+
+		public CBundleContext getBundleContext() { return m_bundleCtx; }
+
+		//////////////////////////////////////////////////////////////////////////
+
 		public IServiceReference getReference()
 		{
 			throw new NotImplementedException();
@@ -24,8 +39,14 @@ namespace framework.Core.Implementation
 
 		public void Unregister()
 		{
-			throw new NotImplementedException();
+			m_bundleCtx.UnregisterService(this);
 		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		string[] m_clazz;
+		object m_instance;
+		CBundleContext m_bundleCtx;
 
 		//////////////////////////////////////////////////////////////////////////
 	}

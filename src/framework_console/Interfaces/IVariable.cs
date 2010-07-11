@@ -6,7 +6,7 @@ namespace framework_console
 {
 	//////////////////////////////////////////////////////////////////////////
 
-	public class VariableInfo
+	public struct VariableInfo
 	{
 		public string Name;
 		public string ShortDescription;

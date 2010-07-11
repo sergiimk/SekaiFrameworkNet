@@ -37,6 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Console\CFrameworkConsole.cs" />
     <Compile Include="Core\Implementation\Bundle\CBundle.cs" />
     <Compile Include="Core\Implementation\Bundle\CBundleContext.cs" />
     <Compile Include="Core\Implementation\Bundle\CManifest.cs" />
@@ -68,6 +69,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\framework_console\framework_console.csproj">
+      <Project>{656E1566-6687-477E-A75C-B25D498C8D41}</Project>
+      <Name>framework_console</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

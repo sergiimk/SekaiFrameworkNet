@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using framework.Core;
 using System.IO;
 
 namespace framework_console

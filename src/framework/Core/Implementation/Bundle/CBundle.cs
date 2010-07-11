@@ -10,7 +10,7 @@ namespace framework.Core.Implementation
 	{
 		//////////////////////////////////////////////////////////////////////////
 
-		public CBundle(	long id, string location, CManifest manifest, DateTime lastModified, CSystemBundle systemBundle)
+		public CBundle(long id, string location, CManifest manifest, DateTime lastModified, CSystemBundle systemBundle)
 		{
 			m_id = id;
 			m_location = location;
@@ -18,7 +18,6 @@ namespace framework.Core.Implementation
 			m_lastModified = lastModified;
 			m_systemBundle = systemBundle;
 			m_state = BundleState.INSTALLED;
-			m_publishedServices = new List<IServiceRegistration>();
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -37,10 +36,10 @@ namespace framework.Core.Implementation
 		{
 			lock (m_lock)
 			{
-				IServiceReference[] ret = new IServiceReference[m_publishedServices.Count];
-				for (int i = 0; i != m_publishedServices.Count; ++i)
-					m_publishedServices[i].getReference();
-				return ret;
+				if (m_context == null)
+					return new IServiceReference[0];
+
+				return m_context.getRegisteredServices();
 			}
 		}
 
@@ -48,7 +47,13 @@ namespace framework.Core.Implementation
 
 		public IServiceReference[] getServicesInUse()
 		{
-			throw new NotImplementedException();
+			lock (m_lock)
+			{
+				if (m_context == null)
+					return new IServiceReference[0];
+
+				return m_context.getServicesInUse();
+			}
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -222,6 +227,9 @@ namespace framework.Core.Implementation
 			*/
 			m_state = BundleState.STOPPING;
 			m_systemBundle.RaiseBundleEvent(new BundleEvent(BundleEvent.Type.STOPPING, this));
+
+			m_context.Dispose();
+			m_context = null;
 			// TODO: unregister all links
 		}
 
@@ -247,8 +255,6 @@ namespace framework.Core.Implementation
 		protected CSystemBundle m_systemBundle;
 		
 		Assembly					m_assembly;
-		List<IServiceRegistration>	m_publishedServices;
-		//TServicesInUseContainer	m_servicesInUse;
 
 		protected object m_lock = new object();
 	}

@@ -117,12 +117,12 @@ namespace framework.Core
 		/// The ServiceRegistration object is for the private use of the bundle 
 		/// registering the service and should not be shared with other bundles.
 		/// </summary>
-		//IServiceRegistration registerService(string[] clazzes, object service, Dictionary properties);
+		//IServiceRegistration RegisterService(string[] clazzes, object service, Dictionary properties);
 
 		/// <summary>
 		/// Registers the specified service object with the specified properties under the specified class name with the Framework.
 		/// </summary>
-		//IServiceRegistration registerService(string clazz, object service, Dictionary properties);
+		IServiceRegistration RegisterService(string id, object service/*, Dictionary properties*/);
 
 
 		/// <summary>

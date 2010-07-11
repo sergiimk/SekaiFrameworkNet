@@ -53,7 +53,7 @@ namespace framework.Core.Implementation
 					return;
 
 				m_bundleRepository = new CBundleRepository(this);
-				m_serviceRegistry = new CServiceRegistry();
+				m_serviceRegistry = new CServiceRegistry(this);
 				m_eventServer = new CEventServer();
 
 				m_bundleListeners = new ListenerQueue<IBundleListener>();
@@ -98,7 +98,6 @@ namespace framework.Core.Implementation
 					Init();
 
 				m_state = BundleState.ACTIVE;
-
 				RaiseFrameworkEvent(new FrameworkEvent(FrameworkEvent.Type.STARTED, this, null));
 			}
 		}

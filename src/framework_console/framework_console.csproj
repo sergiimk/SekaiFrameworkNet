@@ -36,7 +36,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Implementation\BundleActivator.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Interfaces\ICommandInterpreter.cs" />
     <Compile Include="Interfaces\ICommandProvider.cs" />
@@ -44,13 +43,6 @@
     <Compile Include="Interfaces\IConsoleSession.cs" />
     <Compile Include="Interfaces\IVariable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\framework\framework.csproj">
-      <Project>{FA2E1FBB-27FA-48D0-970B-CFC130878DA8}</Project>
-      <Name>framework</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
