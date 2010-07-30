@@ -47,9 +47,9 @@ namespace framework.Core.Implementation
 
 			lock(m_lock)
 			{
-				if(m_state == BundleState.STARTING ||
-					m_state == BundleState.ACTIVE ||
-					m_state == BundleState.STOPPING)
+				if(getState() == BundleState.STARTING ||
+					getState() == BundleState.ACTIVE ||
+					getState() == BundleState.STOPPING)
 					return;
 
 				m_bundleRepository = new CBundleRepository(this);
@@ -62,7 +62,8 @@ namespace framework.Core.Implementation
 				m_serviceListeners = new ListenerQueue<IServiceListener>();
 				m_allServiceListeners = new ListenerQueue<IAllServiceListener>();
 
-				m_state = BundleState.STARTING;
+				setState(BundleState.RESOLVED);
+				setState(BundleState.STARTING);
 				m_context = new CBundleContext(this, this);
 				m_activator = new CSystemBundleActivator();
 				m_activator.Start(m_context);
@@ -91,13 +92,13 @@ namespace framework.Core.Implementation
 
 			lock (m_lock)
 			{
-				if (m_state == BundleState.ACTIVE)
+				if (getState() == BundleState.ACTIVE)
 					return;
 
-				if (m_state != BundleState.STARTING)
+				if (getState() != BundleState.STARTING)
 					Init();
 
-				m_state = BundleState.ACTIVE;
+				setState(BundleState.ACTIVE);
 				RaiseFrameworkEvent(new FrameworkEvent(FrameworkEvent.Type.STARTED, this, null));
 			}
 		}
@@ -111,11 +112,11 @@ namespace framework.Core.Implementation
 			*/
 			lock (m_lock)
 			{
-				if (m_state == BundleState.STOPPING ||
-					m_state == BundleState.RESOLVED)
+				if (getState() == BundleState.STOPPING ||
+					getState() == BundleState.RESOLVED)
 					return;
 
-				m_state = BundleState.STOPPING;
+				setState(BundleState.STOPPING);
 
 				ThreadPool.QueueUserWorkItem(doStop);
 			}
@@ -146,7 +147,7 @@ namespace framework.Core.Implementation
 			{
 				m_activator.Stop(m_context);
 
-				m_state = BundleState.RESOLVED;
+				setState(BundleState.RESOLVED);
 
 				m_shutdownResult = new FrameworkEvent(FrameworkEvent.Type.STOPPED, this, null);
 				Monitor.PulseAll(m_lock);
@@ -165,9 +166,9 @@ namespace framework.Core.Implementation
 
 			lock (m_lock)
 			{
-				while (m_state == BundleState.STARTING ||
-					m_state == BundleState.ACTIVE ||
-					m_state == BundleState.STOPPING)
+				while (getState() == BundleState.STARTING ||
+					getState() == BundleState.ACTIVE ||
+					getState() == BundleState.STOPPING)
 				{
 					Monitor.Wait(m_lock, timeout);
 				}

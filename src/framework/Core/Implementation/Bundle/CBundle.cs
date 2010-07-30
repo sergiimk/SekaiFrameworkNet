@@ -32,6 +32,19 @@ namespace framework.Core.Implementation
 
 		//////////////////////////////////////////////////////////////////////////
 
+		protected void setState(BundleState state)
+		{
+			Debug.Assert(m_state != BundleState.INSTALLED || state == BundleState.RESOLVED);
+			Debug.Assert(m_state != BundleState.RESOLVED || state == BundleState.STARTING);
+			Debug.Assert(m_state != BundleState.STARTING || state == BundleState.ACTIVE || state == BundleState.STOPPING);
+			Debug.Assert(m_state != BundleState.ACTIVE || state == BundleState.STOPPING);
+			Debug.Assert(m_state != BundleState.STOPPING || state == BundleState.RESOLVED);
+
+			m_state = state;
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
 		public IServiceReference[] getRegisteredServices()
 		{
 			lock (m_lock)
@@ -248,7 +261,7 @@ namespace framework.Core.Implementation
 		long m_id;
 		string m_location;
 		DateTime m_lastModified;
-		protected BundleState m_state;
+		BundleState m_state;
 		protected CManifest m_manifest;
 		protected CBundleContext m_context;
 		protected IBundleActivator m_activator;

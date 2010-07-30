@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using NUnit.Framework;
+using NMock2;
 
 namespace framework.Core.Implementation
 {
+	//////////////////////////////////////////////////////////////////////////
+	// CEventServer
+	//////////////////////////////////////////////////////////////////////////
+
 	class CEventServer
 	{
-		//////////////////////////////////////////////////////////////////////////
 
 		public CEventServer()
 		{
@@ -68,6 +73,56 @@ namespace framework.Core.Implementation
 		bool m_processingPending;
 		List<IEventDispatcher> m_pendingEvents;
 
-		//////////////////////////////////////////////////////////////////////////
 	}
+
+	//////////////////////////////////////////////////////////////////////////
+	// Test
+	//////////////////////////////////////////////////////////////////////////
+
+	[TestFixture]
+	class TestEventServer
+	{
+		Mockery mocks;
+		CEventServer server;
+		IEventDispatcher mock_disp;
+
+		[SetUp]
+		public void SetUp()
+		{
+			mocks = new Mockery();
+			server = new CEventServer();
+			mock_disp = mocks.NewMock<IEventDispatcher>();
+		}
+
+		[Test]
+		public void TestSendEvent()
+		{
+			Expect.Once.On(mock_disp)
+				.Method("Dispatch");
+
+			Expect.Once.On(mock_disp)
+				.Method("Dispose");
+
+			server.SendEvent(mock_disp);
+
+			mocks.VerifyAllExpectationsHaveBeenMet();
+		}
+
+		[Test]
+		public void TestPostEvent()
+		{
+			Expect.Once.On(mock_disp)
+			    .Method("Dispatch");
+
+			Expect.Once.On(mock_disp)
+				.Method("Dispose");
+
+			server.PostEvent(mock_disp);
+			Thread.Sleep(100);
+
+			mocks.VerifyAllExpectationsHaveBeenMet();
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////
 }

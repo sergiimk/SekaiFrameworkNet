@@ -6,7 +6,7 @@ namespace framework.Core.Implementation
 {
 	//////////////////////////////////////////////////////////////////////////
 
-	interface IEventDispatcher : IDisposable
+	public interface IEventDispatcher : IDisposable
 	{
 		void Dispatch();
 	}

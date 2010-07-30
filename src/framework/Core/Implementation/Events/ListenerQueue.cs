@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using NUnit.Framework;
+using NMock2;
 
 namespace framework.Core.Implementation
 {
 	//////////////////////////////////////////////////////////////////////////
-
+	// ListenerQueue
+	//////////////////////////////////////////////////////////////////////////
 
 	class ListenerQueue<T>
 	{
@@ -107,6 +110,32 @@ namespace framework.Core.Implementation
 		int m_viewCount;
 		List<T> m_listeners;
 		object m_lock = new object();
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	// Test
+	//////////////////////////////////////////////////////////////////////////
+
+	[TestFixture]
+	class TestListenerQueue
+	{
+		[Test]
+		public void TestCOWBehaviour()
+		{
+			ListenerQueue<int> listeners = new ListenerQueue<int>();
+			listeners.Add(1);
+			listeners.Add(2);
+
+			using (ListenerQueue<int>.View view = listeners.getView())
+			{
+				Assert.AreEqual(view.getListeners().Count, 2);
+
+				listeners.Add(3);
+				Assert.AreEqual(view.getListeners().Count, 2);
+			}
+
+			Assert.AreEqual(listeners.getView().getListeners().Count, 3);			
+		}
 	}
 
 	//////////////////////////////////////////////////////////////////////////
