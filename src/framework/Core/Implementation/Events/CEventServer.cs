@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using NMock2;
+using System.Diagnostics;
 
 namespace framework.Core.Implementation
 {
@@ -16,8 +17,9 @@ namespace framework.Core.Implementation
 
 		public CEventServer()
 		{
-			m_processingPending = false;
-			m_pendingEvents = new List<IEventDispatcher>();
+			m_processingScheduled = false;
+			m_pendingQueue = new List<IEventDispatcher>();
+			m_deliveringQueue = new List<IEventDispatcher>();
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -42,15 +44,31 @@ namespace framework.Core.Implementation
 		/// <param name="dispatcher"></param>
 		public void PostEvent(IEventDispatcher dispatcher)
 		{
-			lock (m_pendingEvents)
+			lock (m_lock)
 			{
-				m_pendingEvents.Add(dispatcher);
+				m_pendingQueue.Add(dispatcher);
 
-				if (!m_processingPending)
+				if (!m_processingScheduled)
 				{
+					m_processingScheduled = true;
 					ThreadPool.QueueUserWorkItem(DeliverEvents);
-					m_processingPending = true;
 				}
+			}
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		/// <summary>
+		/// Waits until all posted events were delivered
+		/// </summary>
+		public bool WaitAll(int timeout)
+		{
+			if (timeout == 0)
+				timeout = Timeout.Infinite;
+
+			lock (m_lock)
+			{
+				return m_processingScheduled ? Monitor.Wait(m_lock, timeout) : true;
 			}
 		}
 
@@ -58,21 +76,45 @@ namespace framework.Core.Implementation
 
 		void DeliverEvents(object dummy)
 		{
-			lock (m_pendingEvents)
+			while (true)
 			{
-				for (int i = 0; i != m_pendingEvents.Count; ++i)
-					SendEvent(m_pendingEvents[i]);
+				lock (m_lock)
+				{
+					if (m_pendingQueue.Count == 0)
+						break;
 
-				m_pendingEvents.Clear();
-				m_processingPending = false;
+					SwapQueues();					
+				}
+
+				foreach (IEventDispatcher disp in m_deliveringQueue)
+					SendEvent(disp);
+
+				m_deliveringQueue.Clear();
+			}
+
+			lock (m_lock)
+			{
+				m_processingScheduled = false;
+				Monitor.PulseAll(m_lock);
 			}
 		}
 
 		//////////////////////////////////////////////////////////////////////////
 
-		bool m_processingPending;
-		List<IEventDispatcher> m_pendingEvents;
+		void SwapQueues()
+		{
+			Debug.Assert(m_deliveringQueue.Count == 0);
+			List<IEventDispatcher> t = m_pendingQueue;
+			m_pendingQueue = m_deliveringQueue;
+			m_deliveringQueue = t;
+		}
 
+		//////////////////////////////////////////////////////////////////////////
+
+		object m_lock = new object();
+		bool m_processingScheduled;
+		List<IEventDispatcher> m_pendingQueue;
+		List<IEventDispatcher> m_deliveringQueue;
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -118,7 +160,9 @@ namespace framework.Core.Implementation
 				.Method("Dispose");
 
 			server.PostEvent(mock_disp);
-			Thread.Sleep(100);
+			bool w = server.WaitAll(0);
+
+			Assert.IsTrue(w);
 
 			mocks.VerifyAllExpectationsHaveBeenMet();
 		}

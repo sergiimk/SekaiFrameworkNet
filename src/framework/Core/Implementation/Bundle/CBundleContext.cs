@@ -28,11 +28,11 @@ namespace framework.Core.Implementation
 			lock (m_lock)
 			{
 				while (m_frameworkListeners.Count != 0)
-					RemoveFrameworkListener(m_frameworkListeners[m_frameworkListeners.Count - 1]);
+					_RemoveFrameworkListener(m_frameworkListeners[m_frameworkListeners.Count - 1]);
 				while (m_bundleListeners.Count != 0)
-					RemoveBundleListener(m_bundleListeners[m_bundleListeners.Count - 1]);
+					_RemoveBundleListener(m_bundleListeners[m_bundleListeners.Count - 1]);
 				while (m_serviceListeners.Count != 0)
-					RemoveServiceListener(m_serviceListeners[m_serviceListeners.Count - 1]);
+					_RemoveServiceListener(m_serviceListeners[m_serviceListeners.Count - 1]);
 			}
 		}
 
@@ -118,6 +118,12 @@ namespace framework.Core.Implementation
 		public void RemoveServiceListener(IServiceListener listener)
 		{
 			validate();
+			_RemoveServiceListener(listener);
+		}
+
+		void _RemoveServiceListener(IServiceListener listener)
+		{
+			validate();
 
 			IAllServiceListener al = listener as IAllServiceListener;
 			if (al != null)
@@ -154,7 +160,11 @@ namespace framework.Core.Implementation
 		public void RemoveBundleListener(IBundleListener listener)
 		{
 			validate();
-			
+			_RemoveBundleListener(listener);
+		}
+
+		void _RemoveBundleListener(IBundleListener listener)
+		{
 			ISynchronousBundleListener sl = listener as ISynchronousBundleListener;
 			if (sl != null)
 				m_systemBundle.getSyncBundleListeners().Remove(sl);
@@ -185,6 +195,11 @@ namespace framework.Core.Implementation
 		public void RemoveFrameworkListener(IFrameworkListener listener)
 		{
 			validate();
+			_RemoveFrameworkListener(listener);
+		}
+
+		void _RemoveFrameworkListener(IFrameworkListener listener)
+		{
 			m_systemBundle.getFrameworkListeners().Remove(listener);
 
 			lock (m_lock)

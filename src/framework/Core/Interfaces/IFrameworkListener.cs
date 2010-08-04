@@ -6,7 +6,7 @@ namespace framework.Core
 {
 	//////////////////////////////////////////////////////////////////////////
 	
-	public class FrameworkEvent
+	public struct FrameworkEvent
 	{
 		public enum Type
 		{

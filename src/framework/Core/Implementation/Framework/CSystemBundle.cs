@@ -52,6 +52,7 @@ namespace framework.Core.Implementation
 					getState() == BundleState.STOPPING)
 					return;
 
+				m_shutdownResult = new FrameworkEvent(FrameworkEvent.Type.STOPPED, this, null);
 				m_bundleRepository = new CBundleRepository(this);
 				m_serviceRegistry = new CServiceRegistry(this);
 				m_eventServer = new CEventServer();
@@ -62,8 +63,10 @@ namespace framework.Core.Implementation
 				m_serviceListeners = new ListenerQueue<IServiceListener>();
 				m_allServiceListeners = new ListenerQueue<IAllServiceListener>();
 
-				setState(BundleState.RESOLVED);
+				if(getState() == BundleState.INSTALLED)
+					setState(BundleState.RESOLVED);
 				setState(BundleState.STARTING);
+
 				m_context = new CBundleContext(this, this);
 				m_activator = new CSystemBundleActivator();
 				m_activator.Start(m_context);
@@ -149,6 +152,15 @@ namespace framework.Core.Implementation
 
 				setState(BundleState.RESOLVED);
 
+				m_eventServer.WaitAll(0);
+
+				m_context.Dispose();
+				m_context = null;
+
+				m_bundleRepository = null;
+				m_serviceRegistry = null;
+				m_eventServer = null;
+
 				m_shutdownResult = new FrameworkEvent(FrameworkEvent.Type.STOPPED, this, null);
 				Monitor.PulseAll(m_lock);
 			}
@@ -173,7 +185,7 @@ namespace framework.Core.Implementation
 					Monitor.Wait(m_lock, timeout);
 				}
 
-				return m_shutdownResult ?? new FrameworkEvent(FrameworkEvent.Type.STOPPED, this, null);
+				return m_shutdownResult;
 			}
 		}
 
