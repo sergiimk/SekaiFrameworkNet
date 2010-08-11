@@ -55,6 +55,7 @@
     <Compile Include="Core\Implementation\Framework\CFrameworkFactory.cs" />
     <Compile Include="Core\Implementation\Framework\CSystemBundleActivator.cs" />
     <Compile Include="Core\Implementation\Framework\CSystemBundle.cs" />
+    <Compile Include="Core\Implementation\Misc\StaleReferenceChecker.cs" />
     <Compile Include="Core\Implementation\Services\CServiceReference.cs" />
     <Compile Include="Core\Implementation\Services\CServiceRegistration.cs" />
     <Compile Include="Core\Implementation\Services\CServiceRegistry.cs" />

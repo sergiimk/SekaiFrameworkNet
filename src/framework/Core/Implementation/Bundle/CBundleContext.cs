@@ -10,7 +10,7 @@ namespace framework.Core.Implementation
 
 		public CBundleContext(CBundle bundle, CSystemBundle systemBundle)
 		{
-			m_valid = true;
+			m_checker = new StaleReferenceChecker(onStaleRefAccess);
 			m_bundle = bundle;
 			m_systemBundle = systemBundle;
 			m_publishedServices = new List<CServiceRegistration>();
@@ -23,25 +23,31 @@ namespace framework.Core.Implementation
 
 		public void Dispose()
 		{
-			m_valid = false;
-
-			lock (m_lock)
+			try
 			{
-				while (m_frameworkListeners.Count != 0)
-					_RemoveFrameworkListener(m_frameworkListeners[m_frameworkListeners.Count - 1]);
-				while (m_bundleListeners.Count != 0)
-					_RemoveBundleListener(m_bundleListeners[m_bundleListeners.Count - 1]);
-				while (m_serviceListeners.Count != 0)
-					_RemoveServiceListener(m_serviceListeners[m_serviceListeners.Count - 1]);
+				m_checker.BeginDispose();
+
+				lock (m_lock)
+				{
+					while (m_frameworkListeners.Count != 0)
+						RemoveFrameworkListener(m_frameworkListeners[m_frameworkListeners.Count - 1]);
+					while (m_bundleListeners.Count != 0)
+						RemoveBundleListener(m_bundleListeners[m_bundleListeners.Count - 1]);
+					while (m_serviceListeners.Count != 0)
+						RemoveServiceListener(m_serviceListeners[m_serviceListeners.Count - 1]);
+				}
+			}
+			finally
+			{
+				m_checker.EndDispose();
 			}
 		}
 
 		//////////////////////////////////////////////////////////////////////////
 
-		void validate()
+		static void onStaleRefAccess()
 		{
-			if (!m_valid)
-				throw new BundleException("Bundle context is no longer valid", BundleException.ErrorCode.ILLEGAL_STATE, null);
+			throw new BundleException("Bundle context is no longer valid", BundleException.ErrorCode.ILLEGAL_STATE, null);
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -62,7 +68,7 @@ namespace framework.Core.Implementation
 
 		public IBundle InstallBundle(string location, System.IO.Stream input)
 		{
-			validate();
+			m_checker.Check();
 			CBundleRepository repo = m_systemBundle.getBundleRepository();
 			return repo.InstallBundle(location, input);
 		}
@@ -75,7 +81,7 @@ namespace framework.Core.Implementation
 
 		public IBundle getBundle(long id)
 		{
-			validate();
+			m_checker.Check();
 			throw new NotImplementedException();
 		}
 
@@ -83,7 +89,7 @@ namespace framework.Core.Implementation
 
 		public IBundle[] getBundles()
 		{
-			validate();
+			m_checker.Check();
 			throw new NotImplementedException();
 		}
 
@@ -91,7 +97,7 @@ namespace framework.Core.Implementation
 
 		public void AddServiceListener(IServiceListener listener, string filter)
 		{
-			validate();
+			m_checker.Check();
 			throw new NotImplementedException();
 		}
 
@@ -99,7 +105,7 @@ namespace framework.Core.Implementation
 
 		public void AddServiceListener(IServiceListener listener)
 		{
-			validate();
+			m_checker.Check();
 
 			IAllServiceListener al = listener as IAllServiceListener;
 			if (al != null)
@@ -117,13 +123,7 @@ namespace framework.Core.Implementation
 
 		public void RemoveServiceListener(IServiceListener listener)
 		{
-			validate();
-			_RemoveServiceListener(listener);
-		}
-
-		void _RemoveServiceListener(IServiceListener listener)
-		{
-			validate();
+			m_checker.Check();
 
 			IAllServiceListener al = listener as IAllServiceListener;
 			if (al != null)
@@ -141,7 +141,7 @@ namespace framework.Core.Implementation
 
 		public void AddBundleListener(IBundleListener listener)
 		{
-			validate();
+			m_checker.Check();
 			
 			ISynchronousBundleListener sl = listener as ISynchronousBundleListener;
 			if (sl != null)
@@ -159,12 +159,8 @@ namespace framework.Core.Implementation
 
 		public void RemoveBundleListener(IBundleListener listener)
 		{
-			validate();
-			_RemoveBundleListener(listener);
-		}
-
-		void _RemoveBundleListener(IBundleListener listener)
-		{
+			m_checker.Check();
+			
 			ISynchronousBundleListener sl = listener as ISynchronousBundleListener;
 			if (sl != null)
 				m_systemBundle.getSyncBundleListeners().Remove(sl);
@@ -181,7 +177,7 @@ namespace framework.Core.Implementation
 
 		public void AddFrameworkListener(IFrameworkListener listener)
 		{
-			validate();
+			m_checker.Check();
 			m_systemBundle.getFrameworkListeners().Add(listener);
 
 			lock (m_lock)
@@ -194,12 +190,7 @@ namespace framework.Core.Implementation
 
 		public void RemoveFrameworkListener(IFrameworkListener listener)
 		{
-			validate();
-			_RemoveFrameworkListener(listener);
-		}
-
-		void _RemoveFrameworkListener(IFrameworkListener listener)
-		{
+			m_checker.Check();			
 			m_systemBundle.getFrameworkListeners().Remove(listener);
 
 			lock (m_lock)
@@ -212,7 +203,7 @@ namespace framework.Core.Implementation
 
 		public IServiceRegistration RegisterService(string[] clazz, object service/*, Dictionary properties*/)
 		{
-			validate();
+			m_checker.Check();
 			CServiceRegistration reg = m_systemBundle.getServiceRegistery().RegisterService(clazz, service, this);
 
 			lock (m_lock)
@@ -236,7 +227,7 @@ namespace framework.Core.Implementation
 
 		internal void UnregisterService(CServiceRegistration service)
 		{
-			validate();
+			m_checker.Check();
 			m_systemBundle.getServiceRegistery().UnregisterService(service);
 
 			lock (m_lock)
@@ -249,7 +240,7 @@ namespace framework.Core.Implementation
 
 		public object getService(IServiceReference reference)
 		{
-			validate();
+			m_checker.Check();
 			throw new NotImplementedException();
 		}
 
@@ -257,7 +248,7 @@ namespace framework.Core.Implementation
 
 		public bool ungetService(IServiceReference reference)
 		{
-			validate();
+			m_checker.Check();
 			throw new NotImplementedException();
 		}
 
@@ -265,7 +256,7 @@ namespace framework.Core.Implementation
 
 		public IFilter CreateFilter(string filter)
 		{
-			validate();
+			m_checker.Check();
 			throw new NotImplementedException();
 		}
 
@@ -275,7 +266,7 @@ namespace framework.Core.Implementation
 
 		public IServiceReference[] getRegisteredServices()
 		{
-			validate();
+			m_checker.Check();
 			lock (m_lock)
 			{
 				IServiceReference[] ret = new IServiceReference[m_publishedServices.Count];
@@ -306,7 +297,7 @@ namespace framework.Core.Implementation
 		List<IBundleListener> m_bundleListeners;
 		List<IServiceListener> m_serviceListeners;
 
-		volatile bool m_valid;
+		StaleReferenceChecker m_checker;
 		object m_lock = new object();
 	}
 }
