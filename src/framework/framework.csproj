@@ -75,6 +75,7 @@
     <Compile Include="Core\Interfaces\IServiceRegistration.cs" />
     <Compile Include="Core\Interfaces\Manifest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\bundle_load.cs" />
     <Compile Include="Tests\fwk_init_shutdown.cs" />
   </ItemGroup>
   <ItemGroup />

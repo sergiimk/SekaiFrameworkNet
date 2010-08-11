@@ -82,7 +82,8 @@ namespace framework.Core.Implementation
 		public IBundle getBundle(long id)
 		{
 			m_checker.Check();
-			throw new NotImplementedException();
+			CBundleRepository repo = m_systemBundle.getBundleRepository();
+			return repo.getBundle(id);
 		}
 
 		//////////////////////////////////////////////////////////////////////////
