@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "framework_console", "framew
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "framework_launcher", "framework_launcher\framework_launcher.csproj", "{3C65078A-6D21-46D4-A491-554E8FD99722}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_bundle", "test_bundle\test_bundle.csproj", "{2F1A3CAD-06E0-4249-8637-38DC2334BD0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test_projects", "test_projects", "{EECD42C3-A09B-4D42-A247-084963EC12F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,8 +51,21 @@ Global
 		{3C65078A-6D21-46D4-A491-554E8FD99722}.Release|Mixed Platforms.Build.0 = Release|x86
 		{3C65078A-6D21-46D4-A491-554E8FD99722}.Release|x86.ActiveCfg = Release|x86
 		{3C65078A-6D21-46D4-A491-554E8FD99722}.Release|x86.Build.0 = Release|x86
+		{2F1A3CAD-06E0-4249-8637-38DC2334BD0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F1A3CAD-06E0-4249-8637-38DC2334BD0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F1A3CAD-06E0-4249-8637-38DC2334BD0A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2F1A3CAD-06E0-4249-8637-38DC2334BD0A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2F1A3CAD-06E0-4249-8637-38DC2334BD0A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2F1A3CAD-06E0-4249-8637-38DC2334BD0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F1A3CAD-06E0-4249-8637-38DC2334BD0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F1A3CAD-06E0-4249-8637-38DC2334BD0A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2F1A3CAD-06E0-4249-8637-38DC2334BD0A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2F1A3CAD-06E0-4249-8637-38DC2334BD0A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2F1A3CAD-06E0-4249-8637-38DC2334BD0A} = {EECD42C3-A09B-4D42-A247-084963EC12F8}
 	EndGlobalSection
 EndGlobal
